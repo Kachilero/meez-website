@@ -78,4 +78,6 @@ Vagrant.configure(2) do |config|
 
   # Custom provisioning from vagrant documentation
   config.vm.provision :shell, path: "bootstrap.sh"
+
+  # 8eFs9COCmRup
 end
