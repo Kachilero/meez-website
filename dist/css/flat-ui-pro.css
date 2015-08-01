@@ -5483,7 +5483,7 @@ a.list-group-item > .badge,
   min-height: 53px;
   margin-bottom: 30px;
   border: none;
-  border-radius: 6px;
+  border-radius: 0;
 }
 @media (min-width: 768px) {
   .navbar-header {
@@ -5503,14 +5503,14 @@ a.list-group-item > .badge,
     margin-left: -21px;
   }
   .navbar-collapse .navbar-nav.navbar-left:first-child > li:first-child a {
-    border-bottom-left-radius: 6px;
-    border-top-left-radius: 6px;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
   }
   .navbar-collapse .navbar-nav.navbar-right:last-child {
     margin-right: -21px;
   }
   .navbar-collapse .navbar-nav.navbar-right:last-child > .dropdown:last-child > a {
-    border-radius: 0 6px 6px 0;
+    border-radius: 0 0 0 0;
   }
   .navbar-fixed-top .navbar-collapse .navbar-form.navbar-right:last-child,
   .navbar-fixed-bottom .navbar-collapse .navbar-form.navbar-right:last-child {
@@ -6259,7 +6259,7 @@ fieldset[disabled] .navbar-inverse .navbar-btn.active {
 }
 @media (min-width: 768px) {
   .navbar-embossed > .navbar-collapse {
-    border-radius: 6px;
+    border-radius: 0;
     box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.15);
   }
   .navbar-embossed.navbar-inverse .navbar-nav .active > a,
@@ -8485,7 +8485,7 @@ input.todo-search-field::-webkit-input-placeholder {
     background: #bdc3c7 !important;
   }
 }
-h1 {
-  color: purple;
+body {
+  padding-top: 50px;
 }
 /*# sourceMappingURL=flat-ui-pro.css.map */
