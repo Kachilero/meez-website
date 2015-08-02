@@ -8485,6 +8485,58 @@ input.todo-search-field::-webkit-input-placeholder {
     background: #bdc3c7 !important;
   }
 }
+.hero-full {
+  position: relative;
+  height: 80vh;
+  background-image: url('http://placekitten.com/g/1920/1080');
+  background-size: cover;
+  background-position: center;
+}
+.hero-full .centered-headline {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  text-align: center;
+  color: #3498db;
+}
+.hero-full .centered-headline .headline {
+  font-size: 118px;
+}
+.hero-full .centered-headline .subheadline {
+  font-size: 96px;
+}
+.section-in-out {
+  height: 600px;
+  background-image: url("http://placehold.it/1920x600");
+  background-size: cover;
+  background-position: center;
+}
+.section-mock {
+  position: relative;
+  height: 100vh;
+  background-image: url("http://placehold.it/1920x1080");
+  background-size: cover;
+  background-position: center;
+}
+.section-mock .sim-vid {
+  position: relative;
+}
+.section-mock .sim-vid img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  -webkit-transform: translate(-50%, 50%);
+      -ms-transform: translate(-50%, 50%);
+          transform: translate(-50%, 50%);
+}
 body {
   padding-top: 50px;
 }
