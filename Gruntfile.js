@@ -284,7 +284,8 @@ module.exports = function (grunt) {
         options: {
           livereload: '<%= connect.options.livereload %>'
         },
-        files: ['{,*/}*.html', '{docs,dist}/**/css/{,*/}*.css', '{docs,dist}/**/js/{,*/}*.js']
+        files: ['docs/{,*/}*.html', '{docs,dist}/**/css/{,*/}*.css', '{docs,dist}/**/js/{,*/}*.js'],
+        tasks: ['copy:distTemplate']
       }
     }
   });
