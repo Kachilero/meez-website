@@ -1,6 +1,6 @@
 /*!
  * Flat UI Pro v1.3.2 (http://designmodo.com/flat)
- * Copyright 2013-2014 Designmodo, Inc.
+ * Copyright 2013-2015 Designmodo, Inc.
  */
 /*!
  * jQuery UI Core 1.10.4
@@ -6578,9 +6578,9 @@ $.each( baseEasings, function( name, easeIn ) {
 
 })(jQuery);
 /*!
- * Bootstrap v3.3.1 (http://getbootstrap.com)
- * Copyright 2011-2014 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * Bootstrap v3.3.5 (http://getbootstrap.com)
+ * Copyright 2011-2015 Twitter, Inc.
+ * Licensed under the MIT license
  */
 
 if (typeof jQuery === 'undefined') {
@@ -6588,6 +6588,7 @@ if (typeof jQuery === 'undefined') {
 }
 
 +function ($) {
+  'use strict';
   var version = $.fn.jquery.split(' ')[0].split('.')
   if ((version[0] < 2 && version[1] < 9) || (version[0] == 1 && version[1] == 9 && version[2] < 1)) {
     throw new Error('Bootstrap\'s JavaScript requires jQuery version 1.9.1 or higher')
@@ -6595,10 +6596,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: transition.js v3.3.1
+ * Bootstrap: transition.js v3.3.5
  * http://getbootstrap.com/javascript/#transitions
  * ========================================================================
- * Copyright 2011-2014 Twitter, Inc.
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -6655,10 +6656,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: alert.js v3.3.1
+ * Bootstrap: alert.js v3.3.5
  * http://getbootstrap.com/javascript/#alerts
  * ========================================================================
- * Copyright 2011-2014 Twitter, Inc.
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -6674,7 +6675,7 @@ if (typeof jQuery === 'undefined') {
     $(el).on('click', dismiss, this.close)
   }
 
-  Alert.VERSION = '3.3.1'
+  Alert.VERSION = '3.3.5'
 
   Alert.TRANSITION_DURATION = 150
 
@@ -6750,10 +6751,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: button.js v3.3.1
+ * Bootstrap: button.js v3.3.5
  * http://getbootstrap.com/javascript/#buttons
  * ========================================================================
- * Copyright 2011-2014 Twitter, Inc.
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -6770,7 +6771,7 @@ if (typeof jQuery === 'undefined') {
     this.isLoading = false
   }
 
-  Button.VERSION  = '3.3.1'
+  Button.VERSION  = '3.3.5'
 
   Button.DEFAULTS = {
     loadingText: 'loading...'
@@ -6782,7 +6783,7 @@ if (typeof jQuery === 'undefined') {
     var val  = $el.is('input') ? 'val' : 'html'
     var data = $el.data()
 
-    state = state + 'Text'
+    state += 'Text'
 
     if (data.resetText == null) $el.data('resetText', $el[val]())
 
@@ -6807,15 +6808,19 @@ if (typeof jQuery === 'undefined') {
     if ($parent.length) {
       var $input = this.$element.find('input')
       if ($input.prop('type') == 'radio') {
-        if ($input.prop('checked') && this.$element.hasClass('active')) changed = false
-        else $parent.find('.active').removeClass('active')
+        if ($input.prop('checked')) changed = false
+        $parent.find('.active').removeClass('active')
+        this.$element.addClass('active')
+      } else if ($input.prop('type') == 'checkbox') {
+        if (($input.prop('checked')) !== this.$element.hasClass('active')) changed = false
+        this.$element.toggleClass('active')
       }
-      if (changed) $input.prop('checked', !this.$element.hasClass('active')).trigger('change')
+      $input.prop('checked', this.$element.hasClass('active'))
+      if (changed) $input.trigger('change')
     } else {
       this.$element.attr('aria-pressed', !this.$element.hasClass('active'))
+      this.$element.toggleClass('active')
     }
-
-    if (changed) this.$element.toggleClass('active')
   }
 
 
@@ -6858,7 +6863,7 @@ if (typeof jQuery === 'undefined') {
       var $btn = $(e.target)
       if (!$btn.hasClass('btn')) $btn = $btn.closest('.btn')
       Plugin.call($btn, 'toggle')
-      e.preventDefault()
+      if (!($(e.target).is('input[type="radio"]') || $(e.target).is('input[type="checkbox"]'))) e.preventDefault()
     })
     .on('focus.bs.button.data-api blur.bs.button.data-api', '[data-toggle^="button"]', function (e) {
       $(e.target).closest('.btn').toggleClass('focus', /^focus(in)?$/.test(e.type))
@@ -6867,10 +6872,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: carousel.js v3.3.1
+ * Bootstrap: carousel.js v3.3.5
  * http://getbootstrap.com/javascript/#carousel
  * ========================================================================
- * Copyright 2011-2014 Twitter, Inc.
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -6885,10 +6890,10 @@ if (typeof jQuery === 'undefined') {
     this.$element    = $(element)
     this.$indicators = this.$element.find('.carousel-indicators')
     this.options     = options
-    this.paused      =
-    this.sliding     =
-    this.interval    =
-    this.$active     =
+    this.paused      = null
+    this.sliding     = null
+    this.interval    = null
+    this.$active     = null
     this.$items      = null
 
     this.options.keyboard && this.$element.on('keydown.bs.carousel', $.proxy(this.keydown, this))
@@ -6898,7 +6903,7 @@ if (typeof jQuery === 'undefined') {
       .on('mouseleave.bs.carousel', $.proxy(this.cycle, this))
   }
 
-  Carousel.VERSION  = '3.3.1'
+  Carousel.VERSION  = '3.3.5'
 
   Carousel.TRANSITION_DURATION = 600
 
@@ -6938,8 +6943,11 @@ if (typeof jQuery === 'undefined') {
   }
 
   Carousel.prototype.getItemForDirection = function (direction, active) {
-    var delta = direction == 'prev' ? -1 : 1
     var activeIndex = this.getItemIndex(active)
+    var willWrap = (direction == 'prev' && activeIndex === 0)
+                || (direction == 'next' && activeIndex == (this.$items.length - 1))
+    if (willWrap && !this.options.wrap) return active
+    var delta = direction == 'prev' ? -1 : 1
     var itemIndex = (activeIndex + delta) % this.$items.length
     return this.$items.eq(itemIndex)
   }
@@ -6984,13 +6992,7 @@ if (typeof jQuery === 'undefined') {
     var $next     = next || this.getItemForDirection(type, $active)
     var isCycling = this.interval
     var direction = type == 'next' ? 'left' : 'right'
-    var fallback  = type == 'next' ? 'first' : 'last'
     var that      = this
-
-    if (!$next.length) {
-      if (!this.options.wrap) return
-      $next = this.$element.find('.item')[fallback]()
-    }
 
     if ($next.hasClass('active')) return (this.sliding = false)
 
@@ -7108,10 +7110,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: collapse.js v3.3.1
+ * Bootstrap: collapse.js v3.3.5
  * http://getbootstrap.com/javascript/#collapse
  * ========================================================================
- * Copyright 2011-2014 Twitter, Inc.
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -7125,7 +7127,8 @@ if (typeof jQuery === 'undefined') {
   var Collapse = function (element, options) {
     this.$element      = $(element)
     this.options       = $.extend({}, Collapse.DEFAULTS, options)
-    this.$trigger      = $(this.options.trigger).filter('[href="#' + element.id + '"], [data-target="#' + element.id + '"]')
+    this.$trigger      = $('[data-toggle="collapse"][href="#' + element.id + '"],' +
+                           '[data-toggle="collapse"][data-target="#' + element.id + '"]')
     this.transitioning = null
 
     if (this.options.parent) {
@@ -7137,13 +7140,12 @@ if (typeof jQuery === 'undefined') {
     if (this.options.toggle) this.toggle()
   }
 
-  Collapse.VERSION  = '3.3.1'
+  Collapse.VERSION  = '3.3.5'
 
   Collapse.TRANSITION_DURATION = 350
 
   Collapse.DEFAULTS = {
-    toggle: true,
-    trigger: '[data-toggle="collapse"]'
+    toggle: true
   }
 
   Collapse.prototype.dimension = function () {
@@ -7155,7 +7157,7 @@ if (typeof jQuery === 'undefined') {
     if (this.transitioning || this.$element.hasClass('in')) return
 
     var activesData
-    var actives = this.$parent && this.$parent.find('> .panel').children('.in, .collapsing')
+    var actives = this.$parent && this.$parent.children('.panel').children('.in, .collapsing')
 
     if (actives && actives.length) {
       activesData = actives.data('bs.collapse')
@@ -7281,7 +7283,7 @@ if (typeof jQuery === 'undefined') {
       var data    = $this.data('bs.collapse')
       var options = $.extend({}, Collapse.DEFAULTS, $this.data(), typeof option == 'object' && option)
 
-      if (!data && options.toggle && option == 'show') options.toggle = false
+      if (!data && options.toggle && /show|hide/.test(option)) options.toggle = false
       if (!data) $this.data('bs.collapse', (data = new Collapse(this, options)))
       if (typeof option == 'string') data[option]()
     })
@@ -7312,7 +7314,7 @@ if (typeof jQuery === 'undefined') {
 
     var $target = getTargetFromTrigger($this)
     var data    = $target.data('bs.collapse')
-    var option  = data ? 'toggle' : $.extend({}, $this.data(), { trigger: this })
+    var option  = data ? 'toggle' : $this.data()
 
     Plugin.call($target, option)
   })
@@ -7320,10 +7322,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: dropdown.js v3.3.1
+ * Bootstrap: dropdown.js v3.3.5
  * http://getbootstrap.com/javascript/#dropdowns
  * ========================================================================
- * Copyright 2011-2014 Twitter, Inc.
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -7340,7 +7342,41 @@ if (typeof jQuery === 'undefined') {
     $(element).on('click.bs.dropdown', this.toggle)
   }
 
-  Dropdown.VERSION = '3.3.1'
+  Dropdown.VERSION = '3.3.5'
+
+  function getParent($this) {
+    var selector = $this.attr('data-target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && /#[A-Za-z]/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+    }
+
+    var $parent = selector && $(selector)
+
+    return $parent && $parent.length ? $parent : $this.parent()
+  }
+
+  function clearMenus(e) {
+    if (e && e.which === 3) return
+    $(backdrop).remove()
+    $(toggle).each(function () {
+      var $this         = $(this)
+      var $parent       = getParent($this)
+      var relatedTarget = { relatedTarget: this }
+
+      if (!$parent.hasClass('open')) return
+
+      if (e && e.type == 'click' && /input|textarea/i.test(e.target.tagName) && $.contains($parent[0], e.target)) return
+
+      $parent.trigger(e = $.Event('hide.bs.dropdown', relatedTarget))
+
+      if (e.isDefaultPrevented()) return
+
+      $this.attr('aria-expanded', 'false')
+      $parent.removeClass('open').trigger('hidden.bs.dropdown', relatedTarget)
+    })
+  }
 
   Dropdown.prototype.toggle = function (e) {
     var $this = $(this)
@@ -7355,7 +7391,10 @@ if (typeof jQuery === 'undefined') {
     if (!isActive) {
       if ('ontouchstart' in document.documentElement && !$parent.closest('.navbar-nav').length) {
         // if mobile we use a backdrop because click events don't delegate
-        $('<div class="dropdown-backdrop"/>').insertAfter($(this)).on('click', clearMenus)
+        $(document.createElement('div'))
+          .addClass('dropdown-backdrop')
+          .insertAfter($(this))
+          .on('click', clearMenus)
       }
 
       var relatedTarget = { relatedTarget: this }
@@ -7388,55 +7427,23 @@ if (typeof jQuery === 'undefined') {
     var $parent  = getParent($this)
     var isActive = $parent.hasClass('open')
 
-    if ((!isActive && e.which != 27) || (isActive && e.which == 27)) {
+    if (!isActive && e.which != 27 || isActive && e.which == 27) {
       if (e.which == 27) $parent.find(toggle).trigger('focus')
       return $this.trigger('click')
     }
 
-    var desc = ' li:not(.divider):visible a'
-    var $items = $parent.find('[role="menu"]' + desc + ', [role="listbox"]' + desc)
+    var desc = ' li:not(.disabled):visible a'
+    var $items = $parent.find('.dropdown-menu' + desc)
 
     if (!$items.length) return
 
     var index = $items.index(e.target)
 
-    if (e.which == 38 && index > 0)                 index--                        // up
-    if (e.which == 40 && index < $items.length - 1) index++                        // down
-    if (!~index)                                      index = 0
+    if (e.which == 38 && index > 0)                 index--         // up
+    if (e.which == 40 && index < $items.length - 1) index++         // down
+    if (!~index)                                    index = 0
 
     $items.eq(index).trigger('focus')
-  }
-
-  function clearMenus(e) {
-    if (e && e.which === 3) return
-    $(backdrop).remove()
-    $(toggle).each(function () {
-      var $this         = $(this)
-      var $parent       = getParent($this)
-      var relatedTarget = { relatedTarget: this }
-
-      if (!$parent.hasClass('open')) return
-
-      $parent.trigger(e = $.Event('hide.bs.dropdown', relatedTarget))
-
-      if (e.isDefaultPrevented()) return
-
-      $this.attr('aria-expanded', 'false')
-      $parent.removeClass('open').trigger('hidden.bs.dropdown', relatedTarget)
-    })
-  }
-
-  function getParent($this) {
-    var selector = $this.attr('data-target')
-
-    if (!selector) {
-      selector = $this.attr('href')
-      selector = selector && /#[A-Za-z]/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
-    }
-
-    var $parent = selector && $(selector)
-
-    return $parent && $parent.length ? $parent : $this.parent()
   }
 
 
@@ -7476,16 +7483,15 @@ if (typeof jQuery === 'undefined') {
     .on('click.bs.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
     .on('click.bs.dropdown.data-api', toggle, Dropdown.prototype.toggle)
     .on('keydown.bs.dropdown.data-api', toggle, Dropdown.prototype.keydown)
-    .on('keydown.bs.dropdown.data-api', '[role="menu"]', Dropdown.prototype.keydown)
-    .on('keydown.bs.dropdown.data-api', '[role="listbox"]', Dropdown.prototype.keydown)
+    .on('keydown.bs.dropdown.data-api', '.dropdown-menu', Dropdown.prototype.keydown)
 
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: modal.js v3.3.1
+ * Bootstrap: modal.js v3.3.5
  * http://getbootstrap.com/javascript/#modals
  * ========================================================================
- * Copyright 2011-2014 Twitter, Inc.
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -7497,12 +7503,15 @@ if (typeof jQuery === 'undefined') {
   // ======================
 
   var Modal = function (element, options) {
-    this.options        = options
-    this.$body          = $(document.body)
-    this.$element       = $(element)
-    this.$backdrop      =
-    this.isShown        = null
-    this.scrollbarWidth = 0
+    this.options             = options
+    this.$body               = $(document.body)
+    this.$element            = $(element)
+    this.$dialog             = this.$element.find('.modal-dialog')
+    this.$backdrop           = null
+    this.isShown             = null
+    this.originalBodyPad     = null
+    this.scrollbarWidth      = 0
+    this.ignoreBackdropClick = false
 
     if (this.options.remote) {
       this.$element
@@ -7513,7 +7522,7 @@ if (typeof jQuery === 'undefined') {
     }
   }
 
-  Modal.VERSION  = '3.3.1'
+  Modal.VERSION  = '3.3.5'
 
   Modal.TRANSITION_DURATION = 300
   Modal.BACKDROP_TRANSITION_DURATION = 150
@@ -7547,6 +7556,12 @@ if (typeof jQuery === 'undefined') {
 
     this.$element.on('click.dismiss.bs.modal', '[data-dismiss="modal"]', $.proxy(this.hide, this))
 
+    this.$dialog.on('mousedown.dismiss.bs.modal', function () {
+      that.$element.one('mouseup.dismiss.bs.modal', function (e) {
+        if ($(e.target).is(that.$element)) that.ignoreBackdropClick = true
+      })
+    })
+
     this.backdrop(function () {
       var transition = $.support.transition && that.$element.hasClass('fade')
 
@@ -7558,23 +7573,20 @@ if (typeof jQuery === 'undefined') {
         .show()
         .scrollTop(0)
 
-      if (that.options.backdrop) that.adjustBackdrop()
       that.adjustDialog()
 
       if (transition) {
         that.$element[0].offsetWidth // force reflow
       }
 
-      that.$element
-        .addClass('in')
-        .attr('aria-hidden', false)
+      that.$element.addClass('in')
 
       that.enforceFocus()
 
       var e = $.Event('shown.bs.modal', { relatedTarget: _relatedTarget })
 
       transition ?
-        that.$element.find('.modal-dialog') // wait for modal to slide in
+        that.$dialog // wait for modal to slide in
           .one('bsTransitionEnd', function () {
             that.$element.trigger('focus').trigger(e)
           })
@@ -7601,8 +7613,10 @@ if (typeof jQuery === 'undefined') {
 
     this.$element
       .removeClass('in')
-      .attr('aria-hidden', true)
       .off('click.dismiss.bs.modal')
+      .off('mouseup.dismiss.bs.modal')
+
+    this.$dialog.off('mousedown.dismiss.bs.modal')
 
     $.support.transition && this.$element.hasClass('fade') ?
       this.$element
@@ -7662,14 +7676,20 @@ if (typeof jQuery === 'undefined') {
     if (this.isShown && this.options.backdrop) {
       var doAnimate = $.support.transition && animate
 
-      this.$backdrop = $('<div class="modal-backdrop ' + animate + '" />')
-        .prependTo(this.$element)
-        .on('click.dismiss.bs.modal', $.proxy(function (e) {
-          if (e.target !== e.currentTarget) return
-          this.options.backdrop == 'static'
-            ? this.$element[0].focus.call(this.$element[0])
-            : this.hide.call(this)
-        }, this))
+      this.$backdrop = $(document.createElement('div'))
+        .addClass('modal-backdrop ' + animate)
+        .appendTo(this.$body)
+
+      this.$element.on('click.dismiss.bs.modal', $.proxy(function (e) {
+        if (this.ignoreBackdropClick) {
+          this.ignoreBackdropClick = false
+          return
+        }
+        if (e.target !== e.currentTarget) return
+        this.options.backdrop == 'static'
+          ? this.$element[0].focus()
+          : this.hide()
+      }, this))
 
       if (doAnimate) this.$backdrop[0].offsetWidth // force reflow
 
@@ -7704,14 +7724,7 @@ if (typeof jQuery === 'undefined') {
   // these following methods are used to handle overflowing modals
 
   Modal.prototype.handleUpdate = function () {
-    if (this.options.backdrop) this.adjustBackdrop()
     this.adjustDialog()
-  }
-
-  Modal.prototype.adjustBackdrop = function () {
-    this.$backdrop
-      .css('height', 0)
-      .css('height', this.$element[0].scrollHeight)
   }
 
   Modal.prototype.adjustDialog = function () {
@@ -7731,17 +7744,23 @@ if (typeof jQuery === 'undefined') {
   }
 
   Modal.prototype.checkScrollbar = function () {
-    this.bodyIsOverflowing = document.body.scrollHeight > document.documentElement.clientHeight
+    var fullWindowWidth = window.innerWidth
+    if (!fullWindowWidth) { // workaround for missing window.innerWidth in IE8
+      var documentElementRect = document.documentElement.getBoundingClientRect()
+      fullWindowWidth = documentElementRect.right - Math.abs(documentElementRect.left)
+    }
+    this.bodyIsOverflowing = document.body.clientWidth < fullWindowWidth
     this.scrollbarWidth = this.measureScrollbar()
   }
 
   Modal.prototype.setScrollbar = function () {
     var bodyPad = parseInt((this.$body.css('padding-right') || 0), 10)
+    this.originalBodyPad = document.body.style.paddingRight || ''
     if (this.bodyIsOverflowing) this.$body.css('padding-right', bodyPad + this.scrollbarWidth)
   }
 
   Modal.prototype.resetScrollbar = function () {
-    this.$body.css('padding-right', '')
+    this.$body.css('padding-right', this.originalBodyPad)
   }
 
   Modal.prototype.measureScrollbar = function () { // thx walsh
@@ -7807,11 +7826,11 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: tooltip.js v3.3.1
+ * Bootstrap: tooltip.js v3.3.5
  * http://getbootstrap.com/javascript/#tooltip
  * Inspired by the original jQuery.tipsy by Jason Frame
  * ========================================================================
- * Copyright 2011-2014 Twitter, Inc.
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -7823,17 +7842,18 @@ if (typeof jQuery === 'undefined') {
   // ===============================
 
   var Tooltip = function (element, options) {
-    this.type       =
-    this.options    =
-    this.enabled    =
-    this.timeout    =
-    this.hoverState =
+    this.type       = null
+    this.options    = null
+    this.enabled    = null
+    this.timeout    = null
+    this.hoverState = null
     this.$element   = null
+    this.inState    = null
 
     this.init('tooltip', element, options)
   }
 
-  Tooltip.VERSION  = '3.3.1'
+  Tooltip.VERSION  = '3.3.5'
 
   Tooltip.TRANSITION_DURATION = 150
 
@@ -7858,7 +7878,12 @@ if (typeof jQuery === 'undefined') {
     this.type      = type
     this.$element  = $(element)
     this.options   = this.getOptions(options)
-    this.$viewport = this.options.viewport && $(this.options.viewport.selector || this.options.viewport)
+    this.$viewport = this.options.viewport && $($.isFunction(this.options.viewport) ? this.options.viewport.call(this, this.$element) : (this.options.viewport.selector || this.options.viewport))
+    this.inState   = { click: false, hover: false, focus: false }
+
+    if (this.$element[0] instanceof document.constructor && !this.options.selector) {
+      throw new Error('`selector` option must be specified when initializing ' + this.type + ' on the window.document object!')
+    }
 
     var triggers = this.options.trigger.split(' ')
 
@@ -7913,14 +7938,18 @@ if (typeof jQuery === 'undefined') {
     var self = obj instanceof this.constructor ?
       obj : $(obj.currentTarget).data('bs.' + this.type)
 
-    if (self && self.$tip && self.$tip.is(':visible')) {
-      self.hoverState = 'in'
-      return
-    }
-
     if (!self) {
       self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
       $(obj.currentTarget).data('bs.' + this.type, self)
+    }
+
+    if (obj instanceof $.Event) {
+      self.inState[obj.type == 'focusin' ? 'focus' : 'hover'] = true
+    }
+
+    if (self.tip().hasClass('in') || self.hoverState == 'in') {
+      self.hoverState = 'in'
+      return
     }
 
     clearTimeout(self.timeout)
@@ -7934,6 +7963,14 @@ if (typeof jQuery === 'undefined') {
     }, self.options.delay.show)
   }
 
+  Tooltip.prototype.isInStateTrue = function () {
+    for (var key in this.inState) {
+      if (this.inState[key]) return true
+    }
+
+    return false
+  }
+
   Tooltip.prototype.leave = function (obj) {
     var self = obj instanceof this.constructor ?
       obj : $(obj.currentTarget).data('bs.' + this.type)
@@ -7942,6 +7979,12 @@ if (typeof jQuery === 'undefined') {
       self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
       $(obj.currentTarget).data('bs.' + this.type, self)
     }
+
+    if (obj instanceof $.Event) {
+      self.inState[obj.type == 'focusout' ? 'focus' : 'hover'] = false
+    }
+
+    if (self.isInStateTrue()) return
 
     clearTimeout(self.timeout)
 
@@ -7989,6 +8032,7 @@ if (typeof jQuery === 'undefined') {
         .data('bs.' + this.type, this)
 
       this.options.container ? $tip.appendTo(this.options.container) : $tip.insertAfter(this.$element)
+      this.$element.trigger('inserted.bs.' + this.type)
 
       var pos          = this.getPosition()
       var actualWidth  = $tip[0].offsetWidth
@@ -7996,13 +8040,12 @@ if (typeof jQuery === 'undefined') {
 
       if (autoPlace) {
         var orgPlacement = placement
-        var $container   = this.options.container ? $(this.options.container) : this.$element.parent()
-        var containerDim = this.getPosition($container)
+        var viewportDim = this.getPosition(this.$viewport)
 
-        placement = placement == 'bottom' && pos.bottom + actualHeight > containerDim.bottom ? 'top'    :
-                    placement == 'top'    && pos.top    - actualHeight < containerDim.top    ? 'bottom' :
-                    placement == 'right'  && pos.right  + actualWidth  > containerDim.width  ? 'left'   :
-                    placement == 'left'   && pos.left   - actualWidth  < containerDim.left   ? 'right'  :
+        placement = placement == 'bottom' && pos.bottom + actualHeight > viewportDim.bottom ? 'top'    :
+                    placement == 'top'    && pos.top    - actualHeight < viewportDim.top    ? 'bottom' :
+                    placement == 'right'  && pos.right  + actualWidth  > viewportDim.width  ? 'left'   :
+                    placement == 'left'   && pos.left   - actualWidth  < viewportDim.left   ? 'right'  :
                     placement
 
         $tip
@@ -8043,8 +8086,8 @@ if (typeof jQuery === 'undefined') {
     if (isNaN(marginTop))  marginTop  = 0
     if (isNaN(marginLeft)) marginLeft = 0
 
-    offset.top  = offset.top  + marginTop
-    offset.left = offset.left + marginLeft
+    offset.top  += marginTop
+    offset.left += marginLeft
 
     // $.fn.offset doesn't round pixel values
     // so we use setOffset directly with our own function B-0
@@ -8080,10 +8123,10 @@ if (typeof jQuery === 'undefined') {
     this.replaceArrow(arrowDelta, $tip[0][arrowOffsetPosition], isVertical)
   }
 
-  Tooltip.prototype.replaceArrow = function (delta, dimension, isHorizontal) {
+  Tooltip.prototype.replaceArrow = function (delta, dimension, isVertical) {
     this.arrow()
-      .css(isHorizontal ? 'left' : 'top', 50 * (1 - delta / dimension) + '%')
-      .css(isHorizontal ? 'top' : 'left', '')
+      .css(isVertical ? 'left' : 'top', 50 * (1 - delta / dimension) + '%')
+      .css(isVertical ? 'top' : 'left', '')
   }
 
   Tooltip.prototype.setContent = function () {
@@ -8096,7 +8139,7 @@ if (typeof jQuery === 'undefined') {
 
   Tooltip.prototype.hide = function (callback) {
     var that = this
-    var $tip = this.tip()
+    var $tip = $(this.$tip)
     var e    = $.Event('hide.bs.' + this.type)
 
     function complete() {
@@ -8113,7 +8156,7 @@ if (typeof jQuery === 'undefined') {
 
     $tip.removeClass('in')
 
-    $.support.transition && this.$tip.hasClass('fade') ?
+    $.support.transition && $tip.hasClass('fade') ?
       $tip
         .one('bsTransitionEnd', complete)
         .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
@@ -8126,7 +8169,7 @@ if (typeof jQuery === 'undefined') {
 
   Tooltip.prototype.fixTitle = function () {
     var $e = this.$element
-    if ($e.attr('title') || typeof ($e.attr('data-original-title')) != 'string') {
+    if ($e.attr('title') || typeof $e.attr('data-original-title') != 'string') {
       $e.attr('data-original-title', $e.attr('title') || '').attr('title', '')
     }
   }
@@ -8154,10 +8197,10 @@ if (typeof jQuery === 'undefined') {
   }
 
   Tooltip.prototype.getCalculatedOffset = function (placement, pos, actualWidth, actualHeight) {
-    return placement == 'bottom' ? { top: pos.top + pos.height,   left: pos.left + pos.width / 2 - actualWidth / 2  } :
-           placement == 'top'    ? { top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2  } :
+    return placement == 'bottom' ? { top: pos.top + pos.height,   left: pos.left + pos.width / 2 - actualWidth / 2 } :
+           placement == 'top'    ? { top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2 } :
            placement == 'left'   ? { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth } :
-        /* placement == 'right' */ { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width   }
+        /* placement == 'right' */ { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width }
 
   }
 
@@ -8181,7 +8224,7 @@ if (typeof jQuery === 'undefined') {
       var rightEdgeOffset = pos.left + viewportPadding + actualWidth
       if (leftEdgeOffset < viewportDimensions.left) { // left overflow
         delta.left = viewportDimensions.left - leftEdgeOffset
-      } else if (rightEdgeOffset > viewportDimensions.width) { // right overflow
+      } else if (rightEdgeOffset > viewportDimensions.right) { // right overflow
         delta.left = viewportDimensions.left + viewportDimensions.width - rightEdgeOffset
       }
     }
@@ -8207,7 +8250,13 @@ if (typeof jQuery === 'undefined') {
   }
 
   Tooltip.prototype.tip = function () {
-    return (this.$tip = this.$tip || $(this.options.template))
+    if (!this.$tip) {
+      this.$tip = $(this.options.template)
+      if (this.$tip.length != 1) {
+        throw new Error(this.type + ' `template` option must consist of exactly 1 top-level element!')
+      }
+    }
+    return this.$tip
   }
 
   Tooltip.prototype.arrow = function () {
@@ -8236,7 +8285,13 @@ if (typeof jQuery === 'undefined') {
       }
     }
 
-    self.tip().hasClass('in') ? self.leave(self) : self.enter(self)
+    if (e) {
+      self.inState.click = !self.inState.click
+      if (self.isInStateTrue()) self.enter(self)
+      else self.leave(self)
+    } else {
+      self.tip().hasClass('in') ? self.leave(self) : self.enter(self)
+    }
   }
 
   Tooltip.prototype.destroy = function () {
@@ -8244,6 +8299,12 @@ if (typeof jQuery === 'undefined') {
     clearTimeout(this.timeout)
     this.hide(function () {
       that.$element.off('.' + that.type).removeData('bs.' + that.type)
+      if (that.$tip) {
+        that.$tip.detach()
+      }
+      that.$tip = null
+      that.$arrow = null
+      that.$viewport = null
     })
   }
 
@@ -8253,18 +8314,12 @@ if (typeof jQuery === 'undefined') {
 
   function Plugin(option) {
     return this.each(function () {
-      var $this    = $(this)
-      var data     = $this.data('bs.tooltip')
-      var options  = typeof option == 'object' && option
-      var selector = options && options.selector
+      var $this   = $(this)
+      var data    = $this.data('bs.tooltip')
+      var options = typeof option == 'object' && option
 
-      if (!data && option == 'destroy') return
-      if (selector) {
-        if (!data) $this.data('bs.tooltip', (data = {}))
-        if (!data[selector]) data[selector] = new Tooltip(this, options)
-      } else {
-        if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)))
-      }
+      if (!data && /destroy|hide/.test(option)) return
+      if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)))
       if (typeof option == 'string') data[option]()
     })
   }
@@ -8286,10 +8341,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: popover.js v3.3.1
+ * Bootstrap: popover.js v3.3.5
  * http://getbootstrap.com/javascript/#popovers
  * ========================================================================
- * Copyright 2011-2014 Twitter, Inc.
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -8306,7 +8361,7 @@ if (typeof jQuery === 'undefined') {
 
   if (!$.fn.tooltip) throw new Error('Popover requires tooltip.js')
 
-  Popover.VERSION  = '3.3.1'
+  Popover.VERSION  = '3.3.5'
 
   Popover.DEFAULTS = $.extend({}, $.fn.tooltip.Constructor.DEFAULTS, {
     placement: 'right',
@@ -8362,29 +8417,18 @@ if (typeof jQuery === 'undefined') {
     return (this.$arrow = this.$arrow || this.tip().find('.arrow'))
   }
 
-  Popover.prototype.tip = function () {
-    if (!this.$tip) this.$tip = $(this.options.template)
-    return this.$tip
-  }
-
 
   // POPOVER PLUGIN DEFINITION
   // =========================
 
   function Plugin(option) {
     return this.each(function () {
-      var $this    = $(this)
-      var data     = $this.data('bs.popover')
-      var options  = typeof option == 'object' && option
-      var selector = options && options.selector
+      var $this   = $(this)
+      var data    = $this.data('bs.popover')
+      var options = typeof option == 'object' && option
 
-      if (!data && option == 'destroy') return
-      if (selector) {
-        if (!data) $this.data('bs.popover', (data = {}))
-        if (!data[selector]) data[selector] = new Popover(this, options)
-      } else {
-        if (!data) $this.data('bs.popover', (data = new Popover(this, options)))
-      }
+      if (!data && /destroy|hide/.test(option)) return
+      if (!data) $this.data('bs.popover', (data = new Popover(this, options)))
       if (typeof option == 'string') data[option]()
     })
   }
@@ -8406,10 +8450,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: scrollspy.js v3.3.1
+ * Bootstrap: scrollspy.js v3.3.5
  * http://getbootstrap.com/javascript/#scrollspy
  * ========================================================================
- * Copyright 2011-2014 Twitter, Inc.
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -8421,10 +8465,8 @@ if (typeof jQuery === 'undefined') {
   // ==========================
 
   function ScrollSpy(element, options) {
-    var process  = $.proxy(this.process, this)
-
-    this.$body          = $('body')
-    this.$scrollElement = $(element).is('body') ? $(window) : $(element)
+    this.$body          = $(document.body)
+    this.$scrollElement = $(element).is(document.body) ? $(window) : $(element)
     this.options        = $.extend({}, ScrollSpy.DEFAULTS, options)
     this.selector       = (this.options.target || '') + ' .nav li > a'
     this.offsets        = []
@@ -8432,12 +8474,12 @@ if (typeof jQuery === 'undefined') {
     this.activeTarget   = null
     this.scrollHeight   = 0
 
-    this.$scrollElement.on('scroll.bs.scrollspy', process)
+    this.$scrollElement.on('scroll.bs.scrollspy', $.proxy(this.process, this))
     this.refresh()
     this.process()
   }
 
-  ScrollSpy.VERSION  = '3.3.1'
+  ScrollSpy.VERSION  = '3.3.5'
 
   ScrollSpy.DEFAULTS = {
     offset: 10
@@ -8448,19 +8490,18 @@ if (typeof jQuery === 'undefined') {
   }
 
   ScrollSpy.prototype.refresh = function () {
-    var offsetMethod = 'offset'
-    var offsetBase   = 0
+    var that          = this
+    var offsetMethod  = 'offset'
+    var offsetBase    = 0
+
+    this.offsets      = []
+    this.targets      = []
+    this.scrollHeight = this.getScrollHeight()
 
     if (!$.isWindow(this.$scrollElement[0])) {
       offsetMethod = 'position'
       offsetBase   = this.$scrollElement.scrollTop()
     }
-
-    this.offsets = []
-    this.targets = []
-    this.scrollHeight = this.getScrollHeight()
-
-    var self     = this
 
     this.$body
       .find(this.selector)
@@ -8476,8 +8517,8 @@ if (typeof jQuery === 'undefined') {
       })
       .sort(function (a, b) { return a[0] - b[0] })
       .each(function () {
-        self.offsets.push(this[0])
-        self.targets.push(this[1])
+        that.offsets.push(this[0])
+        that.targets.push(this[1])
       })
   }
 
@@ -8506,7 +8547,7 @@ if (typeof jQuery === 'undefined') {
     for (i = offsets.length; i--;) {
       activeTarget != targets[i]
         && scrollTop >= offsets[i]
-        && (!offsets[i + 1] || scrollTop <= offsets[i + 1])
+        && (offsets[i + 1] === undefined || scrollTop < offsets[i + 1])
         && this.activate(targets[i])
     }
   }
@@ -8517,8 +8558,8 @@ if (typeof jQuery === 'undefined') {
     this.clear()
 
     var selector = this.selector +
-        '[data-target="' + target + '"],' +
-        this.selector + '[href="' + target + '"]'
+      '[data-target="' + target + '"],' +
+      this.selector + '[href="' + target + '"]'
 
     var active = $(selector)
       .parents('li')
@@ -8582,10 +8623,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: tab.js v3.3.1
+ * Bootstrap: tab.js v3.3.5
  * http://getbootstrap.com/javascript/#tabs
  * ========================================================================
- * Copyright 2011-2014 Twitter, Inc.
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -8597,10 +8638,12 @@ if (typeof jQuery === 'undefined') {
   // ====================
 
   var Tab = function (element) {
+    // jscs:disable requireDollarBeforejQueryAssignment
     this.element = $(element)
+    // jscs:enable requireDollarBeforejQueryAssignment
   }
 
-  Tab.VERSION = '3.3.1'
+  Tab.VERSION = '3.3.5'
 
   Tab.TRANSITION_DURATION = 150
 
@@ -8648,7 +8691,7 @@ if (typeof jQuery === 'undefined') {
     var $active    = container.find('> .active')
     var transition = callback
       && $.support.transition
-      && (($active.length && $active.hasClass('fade')) || !!container.find('> .fade').length)
+      && ($active.length && $active.hasClass('fade') || !!container.find('> .fade').length)
 
     function next() {
       $active
@@ -8671,7 +8714,7 @@ if (typeof jQuery === 'undefined') {
         element.removeClass('fade')
       }
 
-      if (element.parent('.dropdown-menu')) {
+      if (element.parent('.dropdown-menu').length) {
         element
           .closest('li.dropdown')
             .addClass('active')
@@ -8736,10 +8779,10 @@ if (typeof jQuery === 'undefined') {
 }(jQuery);
 
 /* ========================================================================
- * Bootstrap: affix.js v3.3.1
+ * Bootstrap: affix.js v3.3.5
  * http://getbootstrap.com/javascript/#affix
  * ========================================================================
- * Copyright 2011-2014 Twitter, Inc.
+ * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -8758,14 +8801,14 @@ if (typeof jQuery === 'undefined') {
       .on('click.bs.affix.data-api',  $.proxy(this.checkPositionWithEventLoop, this))
 
     this.$element     = $(element)
-    this.affixed      =
-    this.unpin        =
+    this.affixed      = null
+    this.unpin        = null
     this.pinnedOffset = null
 
     this.checkPosition()
   }
 
-  Affix.VERSION  = '3.3.1'
+  Affix.VERSION  = '3.3.5'
 
   Affix.RESET    = 'affix affix-top affix-bottom'
 
@@ -8790,7 +8833,7 @@ if (typeof jQuery === 'undefined') {
     var colliderTop    = initializing ? scrollTop : position.top
     var colliderHeight = initializing ? targetHeight : height
 
-    if (offsetTop != null && colliderTop <= offsetTop) return 'top'
+    if (offsetTop != null && scrollTop <= offsetTop) return 'top'
     if (offsetBottom != null && (colliderTop + colliderHeight >= scrollHeight - offsetBottom)) return 'bottom'
 
     return false
@@ -8815,7 +8858,7 @@ if (typeof jQuery === 'undefined') {
     var offset       = this.options.offset
     var offsetTop    = offset.top
     var offsetBottom = offset.bottom
-    var scrollHeight = $('body').height()
+    var scrollHeight = Math.max($(document).height(), $(document.body).height())
 
     if (typeof offset != 'object')         offsetBottom = offsetTop = offset
     if (typeof offsetTop == 'function')    offsetTop    = offset.top(this.$element)
@@ -11843,14 +11886,21 @@ License:  http://opensource.org/licenses/MIT
         };
     })();
 })(window.jQuery);
-/*! http://mths.be/placeholder v2.0.8 by @mathias */
-;(function(window, document, $) {
+/*! http://mths.be/placeholder v2.0.9 by @mathias */
+(function(factory) {
+	if (typeof define === 'function' && define.amd) {
+		// AMD
+		define(['jquery'], factory);
+	} else {
+		// Browser globals
+		factory(jQuery);
+	}
+}(function($) {
 
 	// Opera Mini v7 doesn’t support placeholder although its DOM seems to indicate so
 	var isOperaMini = Object.prototype.toString.call(window.operamini) == '[object OperaMini]';
 	var isInputSupported = 'placeholder' in document.createElement('input') && !isOperaMini;
 	var isTextareaSupported = 'placeholder' in document.createElement('textarea') && !isOperaMini;
-	var prototype = $.fn;
 	var valHooks = $.valHooks;
 	var propHooks = $.propHooks;
 	var hooks;
@@ -11858,7 +11908,7 @@ License:  http://opensource.org/licenses/MIT
 
 	if (isInputSupported && isTextareaSupported) {
 
-		placeholder = prototype.placeholder = function() {
+		placeholder = $.fn.placeholder = function() {
 			return this;
 		};
 
@@ -11866,7 +11916,7 @@ License:  http://opensource.org/licenses/MIT
 
 	} else {
 
-		placeholder = prototype.placeholder = function() {
+		placeholder = $.fn.placeholder = function() {
 			var $this = this;
 			$this
 				.filter((isInputSupported ? 'textarea' : ':input') + '[placeholder]')
@@ -11905,7 +11955,7 @@ License:  http://opensource.org/licenses/MIT
 				if (!$element.data('placeholder-enabled')) {
 					return element.value = value;
 				}
-				if (value == '') {
+				if (value === '') {
 					element.value = value;
 					// Issue #56: Setting the placeholder causes problems if the element continues to have focus.
 					if (element != safeActiveElement()) {
@@ -11968,7 +12018,7 @@ License:  http://opensource.org/licenses/MIT
 		var $input = $(input);
 		if (input.value == $input.attr('placeholder') && $input.hasClass('placeholder')) {
 			if ($input.data('placeholder-password')) {
-				$input = $input.hide().next().show().attr('id', $input.removeAttr('id').data('placeholder-id'));
+				$input = $input.hide().nextAll('input[type="password"]:first').show().attr('id', $input.removeAttr('id').data('placeholder-id'));
 				// If `clearPlaceholder` was called from `$.valHooks.input.set`
 				if (event === true) {
 					return $input[0].value = value;
@@ -11987,8 +12037,8 @@ License:  http://opensource.org/licenses/MIT
 		var input = this;
 		var $input = $(input);
 		var id = this.id;
-		if (input.value == '') {
-			if (input.type == 'password') {
+		if (input.value === '') {
+			if (input.type === 'password') {
 				if (!$input.data('placeholder-textinput')) {
 					try {
 						$replacement = $input.clone().attr({ 'type': 'text' });
@@ -12009,7 +12059,7 @@ License:  http://opensource.org/licenses/MIT
 						})
 						.before($replacement);
 				}
-				$input = $input.removeAttr('id').hide().prev().attr('id', id).show();
+				$input = $input.removeAttr('id').hide().prevAll('input[type="text"]:first').attr('id', id).show();
 				// Note: `$input[0] != input` now!
 			}
 			$input.addClass('placeholder');
@@ -12027,7 +12077,7 @@ License:  http://opensource.org/licenses/MIT
 		} catch (exception) {}
 	}
 
-}(this, document, jQuery));
+}));
 
 /*
 Copyright 2012 Igor Vaynberg
@@ -15571,14 +15621,14 @@ the specific language governing permissions and limitations under the Apache Lic
 
 }(jQuery));
 
-/*! DataTables 1.10.4
+/*! DataTables 1.10.7
  * ©2008-2014 SpryMedia Ltd - datatables.net/license
  */
 
 /**
  * @summary     DataTables
  * @description Paginate, search and order HTML tables
- * @version     1.10.4
+ * @version     1.10.7
  * @file        jquery.dataTables.js
  * @author      SpryMedia Ltd (www.sprymedia.co.uk)
  * @contact     www.sprymedia.co.uk/contact
@@ -15608,7 +15658,7 @@ the specific language governing permissions and limitations under the Apache Lic
 	}
     else if ( typeof exports === 'object' ) {
         // Node/CommonJS
-        factory( require( 'jquery' ) );
+        module.exports = factory( require( 'jquery' ) );
     }
 	else if ( jQuery && !jQuery.fn.dataTable ) {
 		// Define using browser globals otherwise
@@ -15684,9 +15734,17 @@ the specific language governing permissions and limitations under the Apache Lic
 	// Escape regular expression special characters
 	var _re_escape_regex = new RegExp( '(\\' + [ '/', '.', '*', '+', '?', '|', '(', ')', '[', ']', '{', '}', '\\', '$', '^', '-' ].join('|\\') + ')', 'g' );
 	
-	// U+2009 is thin space and U+202F is narrow no-break space, both used in many
-	// standards as thousands separators
-	var _re_formatted_numeric = /[',$£€¥%\u2009\u202F]/g;
+	// http://en.wikipedia.org/wiki/Foreign_exchange_market
+	// - \u20BD - Russian ruble.
+	// - \u20a9 - South Korean Won
+	// - \u20BA - Turkish Lira
+	// - \u20B9 - Indian Rupee
+	// - R - Brazil (R$) and South Africa
+	// - fr - Swiss Franc
+	// - kr - Swedish krona, Norwegian krone and Danish krone
+	// - \u2009 is thin space and \u202F is narrow no-break space, both used in many
+	//   standards as thousands separators.
+	var _re_formatted_numeric = /[',$£€¥%\u2009\u202F\u20BD\u20a9\u20BArfk]/gi;
 	
 	
 	var _empty = function ( d ) {
@@ -15715,6 +15773,13 @@ the specific language governing permissions and limitations under the Apache Lic
 	var _isNumber = function ( d, decimalPoint, formatted ) {
 		var strType = typeof d === 'string';
 	
+		// If empty return immediately so there must be a number if it is a
+		// formatted string (this stops the string "k", or "kr", etc being detected
+		// as a formatted number for currency
+		if ( _empty( d ) ) {
+			return true;
+		}
+	
 		if ( decimalPoint && strType ) {
 			d = _numToDecimal( d, decimalPoint );
 		}
@@ -15723,7 +15788,7 @@ the specific language governing permissions and limitations under the Apache Lic
 			d = d.replace( _re_formatted_numeric, '' );
 		}
 	
-		return _empty( d ) || (!isNaN( parseFloat(d) ) && isFinite( d ));
+		return !isNaN( parseFloat(d) ) && isFinite( d );
 	};
 	
 	
@@ -16051,6 +16116,12 @@ the specific language governing permissions and limitations under the Apache Lic
 		_fnCompatMap( init, 'orderData',     'aDataSort' );
 		_fnCompatMap( init, 'orderSequence', 'asSorting' );
 		_fnCompatMap( init, 'orderDataType', 'sortDataType' );
+	
+		// orderData can be given as an integer
+		var dataSort = init.aDataSort;
+		if ( dataSort && ! $.isArray( dataSort ) ) {
+			init.aDataSort = [ dataSort ];
+		}
 	}
 	
 	
@@ -16101,7 +16172,7 @@ the specific language governing permissions and limitations under the Apache Lic
 	
 		// In rtl text layout, some browsers (most, but not all) will place the
 		// scrollbar on the left, rather than the right.
-		browser.bScrollbarLeft = test.offset().left !== 1;
+		browser.bScrollbarLeft = Math.round( test.offset().left ) !== 1;
 	
 		n.remove();
 	}
@@ -16168,7 +16239,7 @@ the specific language governing permissions and limitations under the Apache Lic
 		searchCols[ iCol ] = $.extend( {}, DataTable.models.oSearch, searchCols[ iCol ] );
 	
 		// Use the default column options function to initialise classes etc
-		_fnColumnOptions( oSettings, iCol, null );
+		_fnColumnOptions( oSettings, iCol, $(nTh).data() );
 	}
 	
 	
@@ -16231,7 +16302,7 @@ the specific language governing permissions and limitations under the Apache Lic
 			/* iDataSort to be applied (backwards compatibility), but aDataSort will take
 			 * priority if defined
 			 */
-			if ( typeof oOptions.iDataSort === 'number' )
+			if ( oOptions.iDataSort !== undefined )
 			{
 				oCol.aDataSort = [ oOptions.iDataSort ];
 			}
@@ -17307,6 +17378,10 @@ the specific language governing permissions and limitations under the Apache Lic
 					.addClass( data.DT_RowClass );
 			}
 	
+			if ( data.DT_RowAttr ) {
+				$(tr).attr( data.DT_RowAttr );
+			}
+	
 			if ( data.DT_RowData ) {
 				$(tr).data( data.DT_RowData );
 			}
@@ -17940,8 +18015,6 @@ the specific language governing permissions and limitations under the Apache Lic
 		return aReturn;
 	}
 	
-	
-	
 	/**
 	 * Create an Ajax call based on the table's settings, taking into account that
 	 * parameters can have multiple forms, and backwards compatibility.
@@ -17984,16 +18057,20 @@ the specific language governing permissions and limitations under the Apache Lic
 		var ajaxData;
 		var ajax = oSettings.ajax;
 		var instance = oSettings.oInstance;
+		var callback = function ( json ) {
+			_fnCallbackFire( oSettings, null, 'xhr', [oSettings, json, oSettings.jqXHR] );
+			fn( json );
+		};
 	
 		if ( $.isPlainObject( ajax ) && ajax.data )
 		{
 			ajaxData = ajax.data;
 	
 			var newData = $.isFunction( ajaxData ) ?
-				ajaxData( data ) :  // fn can manipulate data or return an object
-				ajaxData;           // object or array to merge
+				ajaxData( data, oSettings ) :  // fn can manipulate data or return
+				ajaxData;                      // an object object or array to merge
 	
-			// If the function returned an object, use that alone
+			// If the function returned something, use that alone
 			data = $.isFunction( ajaxData ) && newData ?
 				newData :
 				$.extend( true, data, newData );
@@ -18008,24 +18085,25 @@ the specific language governing permissions and limitations under the Apache Lic
 			"success": function (json) {
 				var error = json.error || json.sError;
 				if ( error ) {
-					oSettings.oApi._fnLog( oSettings, 0, error );
+					_fnLog( oSettings, 0, error );
 				}
 	
 				oSettings.json = json;
-				_fnCallbackFire( oSettings, null, 'xhr', [oSettings, json] );
-				fn( json );
+				callback( json );
 			},
 			"dataType": "json",
 			"cache": false,
 			"type": oSettings.sServerMethod,
 			"error": function (xhr, error, thrown) {
-				var log = oSettings.oApi._fnLog;
+				var ret = _fnCallbackFire( oSettings, null, 'xhr', [oSettings, null, oSettings.jqXHR] );
 	
-				if ( error == "parsererror" ) {
-					log( oSettings, 0, 'Invalid JSON response', 1 );
-				}
-				else if ( xhr.readyState === 4 ) {
-					log( oSettings, 0, 'Ajax error', 7 );
+				if ( $.inArray( true, ret ) === -1 ) {
+					if ( error == "parsererror" ) {
+						_fnLog( oSettings, 0, 'Invalid JSON response', 1 );
+					}
+					else if ( xhr.readyState === 4 ) {
+						_fnLog( oSettings, 0, 'Ajax error', 7 );
+					}
 				}
 	
 				_fnProcessingDisplay( oSettings, false );
@@ -18046,7 +18124,7 @@ the specific language governing permissions and limitations under the Apache Lic
 				$.map( data, function (val, key) { // Need to convert back to 1.9 trad format
 					return { name: key, value: val };
 				} ),
-				fn,
+				callback,
 				oSettings
 			);
 		}
@@ -18060,7 +18138,7 @@ the specific language governing permissions and limitations under the Apache Lic
 		else if ( $.isFunction( ajax ) )
 		{
 			// Is a function - let the caller define what needs to be done
-			oSettings.jqXHR = ajax.call( instance, data, fn, oSettings );
+			oSettings.jqXHR = ajax.call( instance, data, callback, oSettings );
 		}
 		else
 		{
@@ -18226,6 +18304,7 @@ the specific language governing permissions and limitations under the Apache Lic
 			return json[old] !== undefined ? json[old] : json[modern];
 		};
 	
+		var data = _fnAjaxDataSrc( settings, json );
 		var draw            = compat( 'sEcho',                'draw' );
 		var recordsTotal    = compat( 'iTotalRecords',        'recordsTotal' );
 		var recordsFiltered = compat( 'iTotalDisplayRecords', 'recordsFiltered' );
@@ -18242,7 +18321,6 @@ the specific language governing permissions and limitations under the Apache Lic
 		settings._iRecordsTotal   = parseInt(recordsTotal, 10);
 		settings._iRecordsDisplay = parseInt(recordsFiltered, 10);
 	
-		var data = _fnAjaxDataSrc( settings, json );
 		for ( var i=0, ien=data.length ; i<ien ; i++ ) {
 			_fnAddData( settings, data[i] );
 		}
@@ -18284,7 +18362,6 @@ the specific language governing permissions and limitations under the Apache Lic
 			_fnGetObjectDataFn( dataSrc )( json ) :
 			json;
 	}
-	
 	
 	/**
 	 * Generate the node required for filtering text
@@ -18566,7 +18643,7 @@ the specific language governing permissions and limitations under the Apache Lic
 			 * 
 			 * ^(?=.*?\bone\b)(?=.*?\btwo three\b)(?=.*?\bfour\b).*$
 			 */
-			var a = $.map( search.match( /"[^"]+"|[^ ]+/g ) || '', function ( word ) {
+			var a = $.map( search.match( /"[^"]+"|[^ ]+/g ) || [''], function ( word ) {
 				if ( word.charAt(0) === '"' ) {
 					var m = word.match( /^"(.*)"$/ );
 					word = m ? m[1] : word;
@@ -19270,7 +19347,7 @@ the specific language governing permissions and limitations under the Apache Lic
 	
 		// When the body is scrolled, then we also want to scroll the headers
 		if ( scrollX ) {
-			$(scrollBody).scroll( function (e) {
+			$(scrollBody).on( 'scroll.DT', function (e) {
 				var scrollLeft = this.scrollLeft;
 	
 				scrollHead.scrollLeft = scrollLeft;
@@ -19651,10 +19728,15 @@ the specific language governing permissions and limitations under the Apache Lic
 			columnCount = columns.length,
 			visibleColumns = _fnGetColumns( oSettings, 'bVisible' ),
 			headerCells = $('th', oSettings.nTHead),
-			tableWidthAttr = table.getAttribute('width'),
+			tableWidthAttr = table.getAttribute('width'), // from DOM element
 			tableContainer = table.parentNode,
 			userInputs = false,
 			i, column, columnIdx, width, outerWidth;
+	
+		var styleWidth = table.style.width;
+		if ( styleWidth && styleWidth.indexOf('%') !== -1 ) {
+			tableWidthAttr = styleWidth;
+		}
 	
 		/* Convert any user input sizes into pixel sizes */
 		for ( i=0 ; i<visibleColumns.length ; i++ ) {
@@ -19682,21 +19764,20 @@ the specific language governing permissions and limitations under the Apache Lic
 		}
 		else
 		{
-			// Otherwise construct a single row table with the widest node in the
-			// data, assign any user defined widths, then insert it into the DOM and
-			// allow the browser to do all the hard work of calculating table widths
+			// Otherwise construct a single row, worst case, table with the widest
+			// node in the data, assign any user defined widths, then insert it into
+			// the DOM and allow the browser to do all the hard work of calculating
+			// table widths
 			var tmpTable = $(table).clone() // don't use cloneNode - IE8 will remove events on the main table
-				.empty()
 				.css( 'visibility', 'hidden' )
-				.removeAttr( 'id' )
-				.append( $(oSettings.nTHead).clone( false ) )
-				.append( $(oSettings.nTFoot).clone( false ) )
-				.append( $('<tbody><tr/></tbody>') );
+				.removeAttr( 'id' );
+	
+			// Clean up the table body
+			tmpTable.find('tbody tr').remove();
+			var tr = $('<tr/>').appendTo( tmpTable.find('tbody') );
 	
 			// Remove any assigned widths from the footer (from scrolling)
 			tmpTable.find('tfoot th, tfoot td').css('width', '');
-	
-			var tr = tmpTable.find( 'tbody tr' );
 	
 			// Apply custom sizing to the cloned header
 			headerCells = _fnGetUniqueThs( oSettings, tmpTable.find('thead')[0] );
@@ -19795,9 +19876,20 @@ the specific language governing permissions and limitations under the Apache Lic
 		}
 	
 		if ( (tableWidthAttr || scrollX) && ! oSettings._reszEvt ) {
-			$(window).bind('resize.DT-'+oSettings.sInstance, _fnThrottle( function () {
-				_fnAdjustColumnSizing( oSettings );
-			} ) );
+			var bindResize = function () {
+				$(window).bind('resize.DT-'+oSettings.sInstance, _fnThrottle( function () {
+					_fnAdjustColumnSizing( oSettings );
+				} ) );
+			};
+	
+			// IE6/7 will crash if we bind a resize event handler on page load.
+			// To be removed in 1.11 which drops IE6/7 support
+			if ( oSettings.oBrowser.bScrollOversize ) {
+				setTimeout( bindResize, 1000 );
+			}
+			else {
+				bindResize();
+			}
 	
 			oSettings._reszEvt = true;
 		}
@@ -19832,12 +19924,9 @@ the specific language governing permissions and limitations under the Apache Lic
 					fn.apply( that, args );
 				}, frequency );
 			}
-			else if ( last ) {
-				last = now;
-				fn.apply( that, args );
-			}
 			else {
 				last = now;
+				fn.apply( that, args );
 			}
 		};
 	}
@@ -19968,41 +20057,28 @@ the specific language governing permissions and limitations under the Apache Lic
 	{
 		// On first run a static variable is set, since this is only needed once.
 		// Subsequent runs will just use the previously calculated value
-		if ( ! DataTable.__scrollbarWidth ) {
-			var inner = $('<p/>').css( {
-				width: '100%',
-				height: 200,
-				padding: 0
-			} )[0];
+		var width = DataTable.__scrollbarWidth;
 	
-			var outer = $('<div/>')
-				.css( {
+		if ( width === undefined ) {
+			var sizer = $('<p/>').css( {
 					position: 'absolute',
 					top: 0,
 					left: 0,
-					width: 200,
+					width: '100%',
 					height: 150,
 					padding: 0,
-					overflow: 'hidden',
+					overflow: 'scroll',
 					visibility: 'hidden'
 				} )
-				.append( inner )
-				.appendTo( 'body' );
+				.appendTo('body');
 	
-			var w1 = inner.offsetWidth;
-			outer.css( 'overflow', 'scroll' );
-			var w2 = inner.offsetWidth;
+			width = sizer[0].offsetWidth - sizer[0].clientWidth;
+			DataTable.__scrollbarWidth = width;
 	
-			if ( w1 === w2 ) {
-				w2 = outer[0].clientWidth;
-			}
-	
-			outer.remove();
-	
-			DataTable.__scrollbarWidth = w1 - w2;
+			sizer.remove();
 		}
 	
-		return DataTable.__scrollbarWidth;
+		return width;
 	}
 	
 	
@@ -20293,6 +20369,10 @@ the specific language governing permissions and limitations under the Apache Lic
 				// Yes, modify the sort
 				nextSortIdx = next( sorting[sortIdx], true );
 	
+				if ( nextSortIdx === null && sorting.length === 1 ) {
+					nextSortIdx = 0; // can't remove sorting completely
+				}
+	
 				if ( nextSortIdx === null ) {
 					sorting.splice( sortIdx, 1 );
 				}
@@ -20527,31 +20607,43 @@ the specific language governing permissions and limitations under the Apache Lic
 	
 		// Restore key features - todo - for 1.11 this needs to be done by
 		// subscribed events
-		settings._iDisplayStart    = state.start;
-		settings.iInitDisplayStart = state.start;
-		settings._iDisplayLength   = state.length;
-		settings.aaSorting = [];
+		if ( state.start !== undefined ) {
+			settings._iDisplayStart    = state.start;
+			settings.iInitDisplayStart = state.start;
+		}
+		if ( state.length !== undefined ) {
+			settings._iDisplayLength   = state.length;
+		}
 	
 		// Order
-		$.each( state.order, function ( i, col ) {
-			settings.aaSorting.push( col[0] >= columns.length ?
-				[ 0, col[1] ] :
-				col
-			);
-		} );
+		if ( state.order !== undefined ) {
+			settings.aaSorting = [];
+			$.each( state.order, function ( i, col ) {
+				settings.aaSorting.push( col[0] >= columns.length ?
+					[ 0, col[1] ] :
+					col
+				);
+			} );
+		}
 	
 		// Search
-		$.extend( settings.oPreviousSearch, _fnSearchToHung( state.search ) );
+		if ( state.search !== undefined ) {
+			$.extend( settings.oPreviousSearch, _fnSearchToHung( state.search ) );
+		}
 	
 		// Columns
 		for ( i=0, ien=state.columns.length ; i<ien ; i++ ) {
 			var col = state.columns[i];
 	
 			// Visibility
-			columns[i].bVisible = col.visible;
+			if ( col.visible !== undefined ) {
+				columns[i].bVisible = col.visible;
+			}
 	
 			// Search
-			$.extend( settings.aoPreSearchCols[i], _fnSearchToHung( col.search ) );
+			if ( col.search !== undefined ) {
+				$.extend( settings.aoPreSearchCols[i], _fnSearchToHung( col.search ) );
+			}
 		}
 	
 		_fnCallbackFire( settings, 'aoStateLoaded', 'stateLoaded', [settings, state] );
@@ -20598,11 +20690,16 @@ the specific language governing permissions and limitations under the Apache Lic
 			var ext = DataTable.ext;
 			var type = ext.sErrMode || ext.errMode;
 	
+			_fnCallbackFire( settings, null, 'error', [ settings, tn, msg ] );
+	
 			if ( type == 'alert' ) {
 				alert( msg );
 			}
-			else {
+			else if ( type == 'throw' ) {
 				throw new Error(msg);
+			}
+			else if ( typeof type == 'function' ) {
+				type( settings, tn, msg );
 			}
 		}
 		else if ( window.console && console.log ) {
@@ -20746,13 +20843,13 @@ the specific language governing permissions and limitations under the Apache Lic
 	 *  @param {object} settings dataTables settings object
 	 *  @param {string} callbackArr Name of the array storage for the callbacks in
 	 *      oSettings
-	 *  @param {string} event Name of the jQuery custom event to trigger. If null no
-	 *      trigger is fired
+	 *  @param {string} eventName Name of the jQuery custom event to trigger. If
+	 *      null no trigger is fired
 	 *  @param {array} args Array of arguments to pass to the callback function /
 	 *      trigger
 	 *  @memberof DataTable#oApi
 	 */
-	function _fnCallbackFire( settings, callbackArr, e, args )
+	function _fnCallbackFire( settings, callbackArr, eventName, args )
 	{
 		var ret = [];
 	
@@ -20762,8 +20859,12 @@ the specific language governing permissions and limitations under the Apache Lic
 			} );
 		}
 	
-		if ( e !== null ) {
-			$(settings.nTable).trigger( e+'.dt', args );
+		if ( eventName !== null ) {
+			var e = $.Event( eventName+'.dt' );
+	
+			$(settings.nTable).trigger( e, args );
+	
+			ret.push( e.result );
 		}
 	
 		return ret;
@@ -21175,8 +21276,8 @@ the specific language governing permissions and limitations under the Apache Lic
 		this.fnDraw = function( complete )
 		{
 			// Note that this isn't an exact match to the old call to _fnDraw - it takes
-			// into account the new data, but can old position.
-			this.api( true ).draw( ! complete );
+			// into account the new data, but can hold position.
+			this.api( true ).draw( complete );
 		};
 		
 		
@@ -21624,6 +21725,7 @@ the specific language governing permissions and limitations under the Apache Lic
 			var sId = this.getAttribute( 'id' );
 			var bInitHandedOff = false;
 			var defaults = DataTable.defaults;
+			var $this = $(this);
 			
 			
 			/* Sanity check */
@@ -21642,30 +21744,34 @@ the specific language governing permissions and limitations under the Apache Lic
 			_fnCamelToHungarian( defaults.column, defaults.column, true );
 			
 			/* Setting up the initialisation object */
-			_fnCamelToHungarian( defaults, oInit );
+			_fnCamelToHungarian( defaults, $.extend( oInit, $this.data() ) );
+			
+			
 			
 			/* Check to see if we are re-initialising a table */
 			var allSettings = DataTable.settings;
 			for ( i=0, iLen=allSettings.length ; i<iLen ; i++ )
 			{
+				var s = allSettings[i];
+			
 				/* Base check on table node */
-				if ( allSettings[i].nTable == this )
+				if ( s.nTable == this || s.nTHead.parentNode == this || (s.nTFoot && s.nTFoot.parentNode == this) )
 				{
 					var bRetrieve = oInit.bRetrieve !== undefined ? oInit.bRetrieve : defaults.bRetrieve;
 					var bDestroy = oInit.bDestroy !== undefined ? oInit.bDestroy : defaults.bDestroy;
 			
 					if ( emptyInit || bRetrieve )
 					{
-						return allSettings[i].oInstance;
+						return s.oInstance;
 					}
 					else if ( bDestroy )
 					{
-						allSettings[i].oInstance.fnDestroy();
+						s.oInstance.fnDestroy();
 						break;
 					}
 					else
 					{
-						_fnLog( allSettings[i], 0, 'Cannot reinitialise DataTable', 3 );
+						_fnLog( s, 0, 'Cannot reinitialise DataTable', 3 );
 						return;
 					}
 				}
@@ -21675,7 +21781,7 @@ the specific language governing permissions and limitations under the Apache Lic
 				 * instance by simply deleting it. This is under the assumption that the table has been
 				 * destroyed by other methods. Anyone using non-id selectors will need to do this manually
 				 */
-				if ( allSettings[i].sTableId == this.id )
+				if ( s.sTableId == this.id )
 				{
 					allSettings.splice( i, 1 );
 					break;
@@ -21691,18 +21797,19 @@ the specific language governing permissions and limitations under the Apache Lic
 			
 			/* Create the settings object for this table and set some of the default parameters */
 			var oSettings = $.extend( true, {}, DataTable.models.oSettings, {
-				"nTable":        this,
-				"oApi":          _that.internal,
-				"oInit":         oInit,
-				"sDestroyWidth": $(this)[0].style.width,
+				"sDestroyWidth": $this[0].style.width,
 				"sInstance":     sId,
 				"sTableId":      sId
 			} );
+			oSettings.nTable = this;
+			oSettings.oApi   = _that.internal;
+			oSettings.oInit  = oInit;
+			
 			allSettings.push( oSettings );
 			
 			// Need to add the instance after the instance after the settings object has been added
 			// to the settings array, so we can self reference the table instance if more than one
-			oSettings.oInstance = (_that.length===1) ? _that : $(this).dataTable();
+			oSettings.oInstance = (_that.length===1) ? _that : $this.dataTable();
 			
 			// Backwards compatibility, before we apply all the defaults
 			_fnCompatOpts( oInit );
@@ -21812,7 +21919,7 @@ the specific language governing permissions and limitations under the Apache Lic
 			{
 				$.extend( oClasses, DataTable.ext.classes, oInit.oClasses );
 			}
-			$(this).addClass( oClasses.sTable );
+			$this.addClass( oClasses.sTable );
 			
 			/* Calculate the scroll bar width and cache it for use later on */
 			if ( oSettings.oScroll.sX !== "" || oSettings.oScroll.sY !== "" )
@@ -21878,7 +21985,7 @@ the specific language governing permissions and limitations under the Apache Lic
 			
 			/* Remove row stripe classes if they are already on the table row */
 			var stripeClasses = oSettings.asStripeClasses;
-			var rowOne = $('tbody tr:eq(0)', this);
+			var rowOne = $this.children('tbody').find('tr').eq(0);
 			if ( $.inArray( true, $.map( stripeClasses, function(el, i) {
 				return rowOne.hasClass(el);
 			} ) ) !== -1 ) {
@@ -21929,7 +22036,7 @@ the specific language governing permissions and limitations under the Apache Lic
 			 */
 			if ( rowOne.length ) {
 				var a = function ( cell, name ) {
-					return cell.getAttribute( 'data-'+name ) ? name : null;
+					return cell.getAttribute( 'data-'+name ) !== null ? name : null;
 				};
 			
 				$.each( _fnGetRowElements( oSettings, rowOne[0] ).cells, function (i, cell) {
@@ -22018,25 +22125,25 @@ the specific language governing permissions and limitations under the Apache Lic
 			_fnBrowserDetect( oSettings );
 			
 			// Work around for Webkit bug 83867 - store the caption-side before removing from doc
-			var captions = $(this).children('caption').each( function () {
-				this._captionSide = $(this).css('caption-side');
+			var captions = $this.children('caption').each( function () {
+				this._captionSide = $this.css('caption-side');
 			} );
 			
-			var thead = $(this).children('thead');
+			var thead = $this.children('thead');
 			if ( thead.length === 0 )
 			{
 				thead = $('<thead/>').appendTo(this);
 			}
 			oSettings.nTHead = thead[0];
 			
-			var tbody = $(this).children('tbody');
+			var tbody = $this.children('tbody');
 			if ( tbody.length === 0 )
 			{
 				tbody = $('<tbody/>').appendTo(this);
 			}
 			oSettings.nTBody = tbody[0];
 			
-			var tfoot = $(this).children('tfoot');
+			var tfoot = $this.children('tfoot');
 			if ( tfoot.length === 0 && captions.length > 0 && (oSettings.oScroll.sX !== "" || oSettings.oScroll.sY !== "") )
 			{
 				// If we are a scrolling table, and no footer has been given, then we need to create
@@ -22045,7 +22152,7 @@ the specific language governing permissions and limitations under the Apache Lic
 			}
 			
 			if ( tfoot.length === 0 || tfoot.children().length === 0 ) {
-				$(this).addClass( oClasses.sNoFooter );
+				$this.addClass( oClasses.sNoFooter );
 			}
 			else if ( tfoot.length > 0 ) {
 				oSettings.nTFoot = tfoot[0];
@@ -22254,10 +22361,8 @@ the specific language governing permissions and limitations under the Apache Lic
 	 */
 	_Api = function ( context, data )
 	{
-		if ( ! this instanceof _Api ) {
-			throw 'DT API must be constructed as a new object';
-			// or should it do the 'new' for the caller?
-			// return new _Api.apply( this, arguments );
+		if ( ! (this instanceof _Api) ) {
+			return new _Api( context, data );
 		}
 	
 		var settings = [];
@@ -22298,18 +22403,12 @@ the specific language governing permissions and limitations under the Apache Lic
 	DataTable.Api = _Api;
 	
 	_Api.prototype = /** @lends DataTables.Api */{
-		/**
-		 * Return a new Api instance, comprised of the data held in the current
-		 * instance, join with the other array(s) and/or value(s).
-		 *
-		 * An alias for `Array.prototype.concat`.
-		 *
-		 * @type method
-		 * @param {*} value1 Arrays and/or values to concatenate.
-		 * @param {*} [...] Additional arrays and/or values to concatenate.
-		 * @returns {DataTables.Api} New API instance, comprising of the combined
-		 *   array.
-		 */
+		any: function ()
+		{
+			return this.flatten().length !== 0;
+		},
+	
+	
 		concat:  __arrayProto.concat,
 	
 	
@@ -22376,7 +22475,6 @@ the specific language governing permissions and limitations under the Apache Lic
 			return -1;
 		},
 	
-		// Note that `alwaysNew` is internal - use iteratorNew externally
 		iterator: function ( flatten, type, fn, alwaysNew ) {
 			var
 				a = [], ret,
@@ -22550,7 +22648,7 @@ the specific language governing permissions and limitations under the Apache Lic
 	_Api.extend = function ( scope, obj, ext )
 	{
 		// Only extend API instances and static properties of the API
-		if ( ! obj || ( ! (obj instanceof _Api) && ! obj.__dt_wrapper ) ) {
+		if ( ! ext.length || ! obj || ( ! (obj instanceof _Api) && ! obj.__dt_wrapper ) ) {
 			return;
 		}
 	
@@ -22916,6 +23014,15 @@ the specific language governing permissions and limitations under the Apache Lic
 	
 	
 	var __reload = function ( settings, holdPosition, callback ) {
+		// Use the draw event to trigger a callback
+		if ( callback ) {
+			var api = new _Api( settings );
+	
+			api.one( 'draw', function () {
+				callback( api.ajax.json() );
+			} );
+		}
+	
 		if ( _fnDataSource( settings ) == 'ssp' ) {
 			_fnReDraw( settings, holdPosition );
 		}
@@ -22933,16 +23040,6 @@ the specific language governing permissions and limitations under the Apache Lic
 	
 				_fnReDraw( settings, holdPosition );
 				_fnProcessingDisplay( settings, false );
-			} );
-		}
-	
-		// Use the draw event to trigger a callback, regardless of if it is an async
-		// or sync draw
-		if ( callback ) {
-			var api = new _Api( settings );
-	
-			api.one( 'draw', function () {
-				callback( api.ajax.json() );
 			} );
 		}
 	};
@@ -23060,7 +23157,7 @@ the specific language governing permissions and limitations under the Apache Lic
 	
 	
 	
-	var _selector_run = function ( selector, select )
+	var _selector_run = function ( type, selector, selectFn, settings, opts )
 	{
 		var
 			out = [], res,
@@ -23079,11 +23176,19 @@ the specific language governing permissions and limitations under the Apache Lic
 				[ selector[i] ];
 	
 			for ( j=0, jen=a.length ; j<jen ; j++ ) {
-				res = select( typeof a[j] === 'string' ? $.trim(a[j]) : a[j] );
+				res = selectFn( typeof a[j] === 'string' ? $.trim(a[j]) : a[j] );
 	
 				if ( res && res.length ) {
 					out.push.apply( out, res );
 				}
+			}
+		}
+	
+		// selector extensions
+		var ext = _ext.selector[ type ];
+		if ( ext.length ) {
+			for ( i=0, ien=ext.length ; i<ien ; i++ ) {
+				out = ext[i]( settings, opts, out );
 			}
 		}
 	
@@ -23099,15 +23204,15 @@ the specific language governing permissions and limitations under the Apache Lic
 	
 		// Backwards compatibility for 1.9- which used the terminology filter rather
 		// than search
-		if ( opts.filter && ! opts.search ) {
+		if ( opts.filter && opts.search === undefined ) {
 			opts.search = opts.filter;
 		}
 	
-		return {
-			search: opts.search || 'none',
-			order:  opts.order  || 'current',
-			page:   opts.page   || 'all'
-		};
+		return $.extend( {
+			search: 'none',
+			order: 'current',
+			page: 'all'
+		}, opts );
 	};
 	
 	
@@ -23119,6 +23224,7 @@ the specific language governing permissions and limitations under the Apache Lic
 				// Assign the first element to the first item in the instance
 				// and truncate the instance and context
 				inst[0] = inst[i];
+				inst[0].length = 1;
 				inst.length = 1;
 				inst.context = [ inst.context[i] ];
 	
@@ -23205,7 +23311,7 @@ the specific language governing permissions and limitations under the Apache Lic
 	
 	var __row_selector = function ( settings, selector, opts )
 	{
-		return _selector_run( selector, function ( sel ) {
+		var run = function ( sel ) {
 			var selInt = _intVal( sel );
 			var i, ien;
 	
@@ -23257,13 +23363,12 @@ the specific language governing permissions and limitations under the Apache Lic
 					return this._DT_RowIndex;
 				} )
 				.toArray();
-		} );
+		};
+	
+		return _selector_run( 'row', selector, run, settings, opts );
 	};
 	
 	
-	/**
-	 *
-	 */
 	_api_register( 'rows()', function ( selector, opts ) {
 		// argument shifting
 		if ( selector === undefined ) {
@@ -23286,7 +23391,6 @@ the specific language governing permissions and limitations under the Apache Lic
 	
 		return inst;
 	} );
-	
 	
 	_api_register( 'rows().nodes()', function () {
 		return this.iterator( 'row', function ( settings, row ) {
@@ -23441,6 +23545,14 @@ the specific language governing permissions and limitations under the Apache Lic
 		// Convert to array of TR elements
 		var rows = [];
 		var addRow = function ( r, k ) {
+			// Recursion to allow for arrays of jQuery objects
+			if ( $.isArray( r ) || r instanceof $ ) {
+				for ( var i=0, ien=r.length ; i<ien ; i++ ) {
+					addRow( r[i], k );
+				}
+				return;
+			}
+	
 			// If we get a TR element, then just add it directly - up to the dev
 			// to add the correct number of columns etc
 			if ( r.nodeName && r.nodeName.toLowerCase() === 'tr' ) {
@@ -23458,14 +23570,7 @@ the specific language governing permissions and limitations under the Apache Lic
 			}
 		};
 	
-		if ( $.isArray( data ) || data instanceof $ ) {
-			for ( var i=0, ien=data.length ; i<ien ; i++ ) {
-				addRow( data[i], klass );
-			}
-		}
-		else {
-			addRow( data, klass );
-		}
+		addRow( data, klass );
 	
 		if ( row._details ) {
 			row._details.remove();
@@ -23690,7 +23795,7 @@ the specific language governing permissions and limitations under the Apache Lic
 			names = _pluck( columns, 'sName' ),
 			nodes = _pluck( columns, 'nTh' );
 	
-		return _selector_run( selector, function ( s ) {
+		var run = function ( s ) {
 			var selInt = _intVal( s );
 	
 			// Selector - all
@@ -23756,7 +23861,9 @@ the specific language governing permissions and limitations under the Apache Lic
 					} )
 					.toArray();
 			}
-		} );
+		};
+	
+		return _selector_run( 'column', selector, run, settings, opts );
 	};
 	
 	
@@ -23819,9 +23926,6 @@ the specific language governing permissions and limitations under the Apache Lic
 	};
 	
 	
-	/**
-	 *
-	 */
 	_api_register( 'columns()', function ( selector, opts ) {
 		// argument shifting
 		if ( selector === undefined ) {
@@ -23845,41 +23949,27 @@ the specific language governing permissions and limitations under the Apache Lic
 		return inst;
 	} );
 	
-	
-	/**
-	 *
-	 */
 	_api_registerPlural( 'columns().header()', 'column().header()', function ( selector, opts ) {
 		return this.iterator( 'column', function ( settings, column ) {
 			return settings.aoColumns[column].nTh;
 		}, 1 );
 	} );
 	
-	
-	/**
-	 *
-	 */
 	_api_registerPlural( 'columns().footer()', 'column().footer()', function ( selector, opts ) {
 		return this.iterator( 'column', function ( settings, column ) {
 			return settings.aoColumns[column].nTf;
 		}, 1 );
 	} );
 	
-	
-	/**
-	 *
-	 */
 	_api_registerPlural( 'columns().data()', 'column().data()', function () {
 		return this.iterator( 'column-rows', __columnData, 1 );
 	} );
-	
 	
 	_api_registerPlural( 'columns().dataSrc()', 'column().dataSrc()', function () {
 		return this.iterator( 'column', function ( settings, column ) {
 			return settings.aoColumns[column].mData;
 		}, 1 );
 	} );
-	
 	
 	_api_registerPlural( 'columns().cache()', 'column().cache()', function ( type ) {
 		return this.iterator( 'column-rows', function ( settings, column, i, j, rows ) {
@@ -23889,14 +23979,11 @@ the specific language governing permissions and limitations under the Apache Lic
 		}, 1 );
 	} );
 	
-	
 	_api_registerPlural( 'columns().nodes()', 'column().nodes()', function () {
 		return this.iterator( 'column-rows', function ( settings, column, i, j, rows ) {
 			return _pluck_order( settings.aoData, rows, 'anCells', column ) ;
 		}, 1 );
 	} );
-	
-	
 	
 	_api_registerPlural( 'columns().visible()', 'column().visible()', function ( vis, calc ) {
 		return this.iterator( 'column', function ( settings, column ) {
@@ -23907,8 +23994,6 @@ the specific language governing permissions and limitations under the Apache Lic
 		} );
 	} );
 	
-	
-	
 	_api_registerPlural( 'columns().indexes()', 'column().index()', function ( type ) {
 		return this.iterator( 'column', function ( settings, column ) {
 			return type === 'visible' ?
@@ -23917,28 +24002,12 @@ the specific language governing permissions and limitations under the Apache Lic
 		}, 1 );
 	} );
 	
-	
-	// _api_register( 'columns().show()', function () {
-	// 	var selector = this.selector;
-	// 	return this.columns( selector.cols, selector.opts ).visible( true );
-	// } );
-	
-	
-	// _api_register( 'columns().hide()', function () {
-	// 	var selector = this.selector;
-	// 	return this.columns( selector.cols, selector.opts ).visible( false );
-	// } );
-	
-	
-	
 	_api_register( 'columns.adjust()', function () {
 		return this.iterator( 'table', function ( settings ) {
 			_fnAdjustColumnSizing( settings );
 		}, 1 );
 	} );
 	
-	
-	// Convert from one column index type, to another type
 	_api_register( 'column.index()', function ( type, idx ) {
 		if ( this.context.length !== 0 ) {
 			var ctx = this.context[0];
@@ -23951,7 +24020,6 @@ the specific language governing permissions and limitations under the Apache Lic
 			}
 		}
 	} );
-	
 	
 	_api_register( 'column()', function ( selector, opts ) {
 		return _selector_first( this.columns( selector, opts ) );
@@ -23970,7 +24038,7 @@ the specific language governing permissions and limitations under the Apache Lic
 		var columns = settings.aoColumns.length;
 		var a, i, ien, j, o, host;
 	
-		return _selector_run( selector, function ( s ) {
+		var run = function ( s ) {
 			var fnSelector = typeof s === 'function';
 	
 			if ( s === null || s === undefined || fnSelector ) {
@@ -23990,7 +24058,7 @@ the specific language governing permissions and limitations under the Apache Lic
 							// Selector - function
 							host = settings.aoData[ row ];
 	
-							if ( s( o, _fnGetCellData(settings, row, j), host.anCells[j] ) ) {
+							if ( s( o, _fnGetCellData(settings, row, j), host.anCells ? host.anCells[j] : null ) ) {
 								a.push( o );
 							}
 						}
@@ -24021,7 +24089,9 @@ the specific language governing permissions and limitations under the Apache Lic
 					};
 				} )
 				.toArray();
-		} );
+		};
+	
+		return _selector_run( 'cell', selector, run, settings, opts );
 	};
 	
 	
@@ -24031,13 +24101,15 @@ the specific language governing permissions and limitations under the Apache Lic
 		// Argument shifting
 		if ( $.isPlainObject( rowSelector ) ) {
 			// Indexes
-			if ( typeof rowSelector.row !== undefined ) {
-				opts = columnSelector;
-				columnSelector = null;
-			}
-			else {
+			if ( rowSelector.row === undefined ) {
+				// Selector options in first parameter
 				opts = rowSelector;
 				rowSelector = null;
+			}
+			else {
+				// Cell index objects in first parameter
+				opts = columnSelector;
+				columnSelector = null;
 			}
 		}
 		if ( $.isPlainObject( columnSelector ) ) {
@@ -24399,7 +24471,10 @@ the specific language governing permissions and limitations under the Apache Lic
 		var is = false;
 	
 		$.each( DataTable.settings, function (i, o) {
-			if ( o.nTable === t || o.nScrollHead === t || o.nScrollFoot === t ) {
+			var head = o.nScrollHead ? $('table', o.nScrollHead)[0] : null;
+			var foot = o.nScrollFoot ? $('table', o.nScrollFoot)[0] : null;
+	
+			if ( o.nTable === t || head === t || foot === t ) {
 				is = true;
 			}
 		} );
@@ -24527,6 +24602,12 @@ the specific language governing permissions and limitations under the Apache Lic
 	} );
 	
 	
+	_api_register( 'init()', function () {
+		var ctx = this.context;
+		return ctx.length ? ctx[0].oInit : null;
+	} );
+	
+	
 	_api_register( 'data()', function () {
 		return this.iterator( 'table', function ( settings ) {
 			return _pluck( settings.aoData, '_aData' );
@@ -24636,6 +24717,36 @@ the specific language governing permissions and limitations under the Apache Lic
 		} );
 	} );
 	
+	
+	// Add the `every()` method for rows, columns and cells in a compact form
+	$.each( [ 'column', 'row', 'cell' ], function ( i, type ) {
+		_api_register( type+'s().every()', function ( fn ) {
+			return this.iterator( type, function ( settings, idx, idx2 ) {
+				// idx2 is undefined for rows and columns.
+				fn.call( new _Api( settings )[ type ]( idx, idx2 ) );
+			} );
+		} );
+	} );
+	
+	
+	// i18n method for extensions to be able to use the language object from the
+	// DataTable
+	_api_register( 'i18n()', function ( token, def, plural ) {
+		var ctx = this.context[0];
+		var resolved = _fnGetObjectDataFn( token )( ctx.oLanguage );
+	
+		if ( resolved === undefined ) {
+			resolved = def;
+		}
+	
+		if ( plural !== undefined && $.isPlainObject( resolved ) ) {
+			resolved = resolved[ plural ] !== undefined ?
+				resolved[ plural ] :
+				resolved._;
+		}
+	
+		return resolved.replace( '%d', plural ); // nb: plural might be undefined,
+	} );
 
 	/**
 	 * Version string for plug-ins to check compatibility. Allowed format is
@@ -24645,7 +24756,7 @@ the specific language governing permissions and limitations under the Apache Lic
 	 *  @type string
 	 *  @default Version number
 	 */
-	DataTable.version = "1.10.4";
+	DataTable.version = "1.10.7";
 
 	/**
 	 * Private data store, containing all of the settings objects that are
@@ -29020,6 +29131,17 @@ the specific language governing permissions and limitations under the Apache Lic
 	 */
 	DataTable.ext = _ext = {
 		/**
+		 * Buttons. For use with the Buttons extension for DataTables. This is
+		 * defined here so other extensions can define buttons regardless of load
+		 * order. It is _not_ used by DataTables core.
+		 *
+		 *  @type object
+		 *  @default {}
+		 */
+		buttons: {},
+	
+	
+		/**
 		 * Element class names
 		 *
 		 *  @type object
@@ -29031,10 +29153,10 @@ the specific language governing permissions and limitations under the Apache Lic
 		/**
 		 * Error reporting.
 		 * 
-		 * How should DataTables report an error. Can take the value 'alert' or
-		 * 'throw'
+		 * How should DataTables report an error. Can take the value 'alert',
+		 * 'throw', 'none' or a function.
 		 *
-		 *  @type string
+		 *  @type string|function
 		 *  @default alert
 		 */
 		errMode: "alert",
@@ -29139,6 +29261,37 @@ the specific language governing permissions and limitations under the Apache Lic
 		 *    );
 		 */
 		search: [],
+	
+	
+		/**
+		 * Selector extensions
+		 *
+		 * The `selector` option can be used to extend the options available for the
+		 * selector modifier options (`selector-modifier` object data type) that
+		 * each of the three built in selector types offer (row, column and cell +
+		 * their plural counterparts). For example the Select extension uses this
+		 * mechanism to provide an option to select only rows, columns and cells
+		 * that have been marked as selected by the end user (`{selected: true}`),
+		 * which can be used in conjunction with the existing built in selector
+		 * options.
+		 *
+		 * Each property is an array to which functions can be pushed. The functions
+		 * take three attributes:
+		 *
+		 * * Settings object for the host table
+		 * * Options object (`selector-modifier` object type)
+		 * * Array of selected item indexes
+		 *
+		 * The return is an array of the resulting item indexes after the custom
+		 * selector has been applied.
+		 *
+		 *  @type object
+		 */
+		selector: {
+			cell: [],
+			column: [],
+			row: []
+		},
 	
 	
 		/**
@@ -29634,7 +29787,7 @@ the specific language governing permissions and limitations under the Apache Lic
 			numbers.splice( 0, 0, 0 );
 		}
 		else {
-			numbers = _range( page-1, page+2 );
+			numbers = _range( page-half+2, page+half-1 );
 			numbers.push( 'ellipsis' );
 			numbers.push( pages-1 );
 			numbers.splice( 0, 0, 'ellipsis' );
@@ -29665,6 +29818,8 @@ the specific language governing permissions and limitations under the Apache Lic
 	
 		// For testing and plug-ins to use
 		_numbers: _numbers,
+	
+		// Number of number buttons (including ellipsis) to show. _Must be odd!_
 		numbers_length: 7
 	} );
 	
@@ -29696,7 +29851,7 @@ the specific language governing permissions and limitations under the Apache Lic
 	
 							switch ( button ) {
 								case 'ellipsis':
-									container.append('<span>&hellip;</span>');
+									container.append('<span class="ellipsis">&#x2026;</span>');
 									break;
 	
 								case 'first':
@@ -29756,20 +29911,22 @@ the specific language governing permissions and limitations under the Apache Lic
 				// IE9 throws an 'unknown error' if document.activeElement is used
 				// inside an iframe or frame. Try / catch the error. Not good for
 				// accessibility, but neither are frames.
+				var activeEl;
+	
 				try {
 					// Because this approach is destroying and recreating the paging
 					// elements, focus is lost on the select button which is bad for
 					// accessibility. So we want to restore focus once the draw has
 					// completed
-					var activeEl = $(document.activeElement).data('dt-idx');
-	
-					attach( $(host).empty(), buttons );
-	
-					if ( activeEl !== null ) {
-						$(host).find( '[data-dt-idx='+activeEl+']' ).focus();
-					}
+					activeEl = $(document.activeElement).data('dt-idx');
 				}
 				catch (e) {}
+	
+				attach( $(host).empty(), buttons );
+	
+				if ( activeEl ) {
+					$(host).find( '[data-dt-idx='+activeEl+']' ).focus();
+				}
 			}
 		}
 	} );
@@ -30078,6 +30235,10 @@ the specific language governing permissions and limitations under the Apache Lic
 		number: function ( thousands, decimal, precision, prefix ) {
 			return {
 				display: function ( d ) {
+					if ( typeof d !== 'number' && typeof d !== 'string' ) {
+						return d;
+					}
+	
 					var negative = d < 0 ? '-' : '';
 					d = Math.abs( parseFloat( d ) );
 	
@@ -30435,7 +30596,7 @@ $.extend( true, DataTable.defaults, {
 	dom:
 		"<'row'<'col-sm-6'l><'col-sm-6'f>>" +
 		"<'row'<'col-sm-12'tr>>" +
-		"<'row'<'col-sm-6'i><'col-sm-6'p>>",
+		"<'row'<'col-sm-5'i><'col-sm-7'p>>",
 	renderer: 'bootstrap'
 } );
 
@@ -30453,7 +30614,7 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 	var api     = new DataTable.Api( settings );
 	var classes = settings.oClasses;
 	var lang    = settings.oLanguage.oPaginate;
-	var btnDisplay, btnClass;
+	var btnDisplay, btnClass, counter=0;
 
 	var attach = function( container, buttons ) {
 		var i, ien, node, button;
@@ -30514,14 +30675,15 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 				if ( btnDisplay ) {
 					node = $('<li>', {
 							'class': classes.sPageButton+' '+btnClass,
-							'aria-controls': settings.sTableId,
-							'tabindex': settings.iTabIndex,
 							'id': idx === 0 && typeof button === 'string' ?
 								settings.sTableId +'_'+ button :
 								null
 						} )
 						.append( $('<a>', {
-								'href': '#'
+								'href': '#',
+								'aria-controls': settings.sTableId,
+								'data-dt-idx': counter,
+								'tabindex': settings.iTabIndex
 							} )
 							.html( btnDisplay )
 						)
@@ -30530,15 +30692,34 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 					settings.oApi._fnBindAction(
 						node, {action: button}, clickHandler
 					);
+
+					counter++;
 				}
 			}
 		}
 	};
 
+	// IE9 throws an 'unknown error' if document.activeElement is used
+	// inside an iframe or frame. 
+	var activeEl;
+
+	try {
+		// Because this approach is destroying and recreating the paging
+		// elements, focus is lost on the select button which is bad for
+		// accessibility. So we want to restore focus once the draw has
+		// completed
+		activeEl = $(document.activeElement).data('dt-idx');
+	}
+	catch (e) {}
+
 	attach(
 		$(host).empty().html('<ul class="pagination"/>').children('ul'),
 		buttons
 	);
+
+	if ( activeEl ) {
+		$(host).find( '[data-dt-idx='+activeEl+']' ).focus();
+	}
 };
 
 
