@@ -8526,6 +8526,10 @@ input.todo-search-field::-webkit-input-placeholder {
   background-size: cover;
   background-position: center;
 }
+.section-intro .vertical-center {
+  padding-top: 5%;
+  padding-bottom: 5%;
+}
 .section-mock {
   position: relative;
   height: 100vh;
