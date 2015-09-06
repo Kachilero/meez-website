@@ -1,24 +1,30 @@
 .section-headline {
-  position: relative;
-  width: 100%;
-  bottom: -10%;
-  //background-color: @brand-primary;
+  //position: relative;
+  //width: 100%;
+  //bottom: -10%;
+
+  @media (max-width: @screen-sm-min) {
+    background-color: rgba(255, 255, 255, 0.4);
+  }
 
   .logo {
-    max-width: 600px;
+    padding: 50px 25px 0 25px;
+
+    @media (max-width: @screen-sm-min) {
+      padding-top: 25px;
+    }
   }
 
   .centered-headline {
     text-align: center;
-    color: @clouds;
+    color: @mat-blue-grey-900;
 
     .headline {
-      font-size: 118px;
       margin-top: 0;
     }
 
     .subheadline {
-      font-size: @font-size-h2;
+      font-size: @font-size-h4;
       margin-top: 0;
       padding-bottom: 15px;
     }

@@ -8486,39 +8486,37 @@ input.todo-search-field::-webkit-input-placeholder {
   }
 }
 .jumbotron.hero-full {
-  position: relative;
-  height: 60vh;
   background-image: url("../../img/MeezWeb-Hero.png");
   background-size: cover;
-  background-position: center;
   margin-bottom: 0;
 }
-.jumbotron.hero-full .logo {
-  position: relative;
-  max-width: 600px;
-  background-color: rgba(200, 200, 200, 0.3);
-  border-radius: 10px;
-  padding: 10px 25px;
-  top: 75%;
+@media (min-width: 1050px) {
+  .jumbotron.hero-full {
+    height: 60vh;
+  }
 }
-.section-headline {
-  position: relative;
-  width: 100%;
-  bottom: -10%;
+@media (max-width: 768px) {
+  .section-headline {
+    background-color: rgba(255, 255, 255, 0.4);
+  }
 }
 .section-headline .logo {
-  max-width: 600px;
+  padding: 50px 25px 0 25px;
+}
+@media (max-width: 768px) {
+  .section-headline .logo {
+    padding-top: 25px;
+  }
 }
 .section-headline .centered-headline {
   text-align: center;
-  color: #ecf0f1;
+  color: #263238;
 }
 .section-headline .centered-headline .headline {
-  font-size: 118px;
   margin-top: 0;
 }
 .section-headline .centered-headline .subheadline {
-  font-size: 53px;
+  font-size: 29px;
   margin-top: 0;
   padding-bottom: 15px;
 }
