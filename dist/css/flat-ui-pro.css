@@ -8492,7 +8492,7 @@ input.todo-search-field::-webkit-input-placeholder {
 }
 @media (min-width: 1050px) {
   .jumbotron.hero-full {
-    height: 60vh;
+    height: 80vh;
   }
 }
 @media (max-width: 768px) {
@@ -8520,11 +8520,10 @@ input.todo-search-field::-webkit-input-placeholder {
   margin-top: 0;
   padding-bottom: 15px;
 }
-.section-in-out {
-  height: 600px;
-  background-image: url("http://placehold.it/1920x600");
-  background-size: cover;
-  background-position: center;
+.section-in-out .input-img {
+  max-height: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .section-intro .vertical-center {
   padding-top: 5%;
