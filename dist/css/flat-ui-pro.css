@@ -8532,26 +8532,14 @@ input.todo-search-field::-webkit-input-placeholder {
   padding-top: 5%;
   padding-bottom: 5%;
 }
-.section-mock {
-  position: relative;
-  height: 100vh;
-  background-image: url("http://placehold.it/1920x1080");
-  background-size: cover;
-  background-position: center;
-}
-.section-mock .sim-vid {
-  position: relative;
-}
-.section-mock .sim-vid img {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-right: -50%;
-  -webkit-transform: translate(-50%, 50%);
-      -ms-transform: translate(-50%, 50%);
-          transform: translate(-50%, 50%);
-}
 .section-visual img {
   padding: 50px 0;
+}
+.section-foot {
+  background-color: #34495e;
+  color: #ecf0f1;
+}
+.section-foot .centered {
+  text-align: center;
 }
 /*# sourceMappingURL=flat-ui-pro.css.map */
