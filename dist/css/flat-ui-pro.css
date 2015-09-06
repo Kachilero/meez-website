@@ -8520,7 +8520,10 @@ input.todo-search-field::-webkit-input-placeholder {
   margin-top: 0;
   padding-bottom: 15px;
 }
-.section-in-out .input-img {
+.section-in-out .sub-input h2 {
+  padding-top: 50px;
+}
+.section-in-out .sub-input .input-img {
   max-height: 600px;
   margin-left: auto;
   margin-right: auto;
@@ -8548,10 +8551,7 @@ input.todo-search-field::-webkit-input-placeholder {
       -ms-transform: translate(-50%, 50%);
           transform: translate(-50%, 50%);
 }
-body {
-  padding-top: 50px;
-}
-.navbar-nav {
-  padding-right: 20px;
+.section-visual img {
+  padding: 50px 0;
 }
 /*# sourceMappingURL=flat-ui-pro.css.map */
